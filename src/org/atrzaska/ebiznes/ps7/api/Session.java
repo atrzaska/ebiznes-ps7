@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.atrzaska.ebiznes.ps7.Config;
@@ -31,12 +33,12 @@ public class Session {
 	/**
 	 * Most visited resource.
 	 */
-	private ApacheLogRecord mostVisitedResource;
+	private String mostVisitedResource;
 
 	/**
 	 * Session start resource.
 	 */
-	private ApacheLogRecord startResource;
+	private String startResource;
 	
 	/**
 	 * Start date.
@@ -51,7 +53,7 @@ public class Session {
 	/**
 	 * Session end resource.
 	 */
-	private ApacheLogRecord endResource;
+	private String endResource;
 
 	/**
 	 * Session records.
@@ -90,27 +92,27 @@ public class Session {
 		this.timePerPage = timePerPage;
 	}
 
-	public ApacheLogRecord getMostVisitedResource() {
+	public String getMostVisitedResource() {
 		return mostVisitedResource;
 	}
 
-	public void setMostVisitedResource(ApacheLogRecord mostVisitedResource) {
+	public void setMostVisitedResource(String mostVisitedResource) {
 		this.mostVisitedResource = mostVisitedResource;
 	}
 
-	public ApacheLogRecord getStartResource() {
+	public String getStartResource() {
 		return startResource;
 	}
 
-	public void setStartResource(ApacheLogRecord startResource) {
+	public void setStartResource(String startResource) {
 		this.startResource = startResource;
 	}
 
-	public ApacheLogRecord getEndResource() {
+	public String getEndResource() {
 		return endResource;
 	}
 
-	public void setEndResource(ApacheLogRecord endResource) {
+	public void setEndResource(String endResource) {
 		this.endResource = endResource;
 	}
 
@@ -126,12 +128,49 @@ public class Session {
 	private void update() {
 		ApacheLogRecord firstRecord = records.get(0);
 		ApacheLogRecord lastRecord = records.get(records.size() - 1);
-		this.startResource = firstRecord;
-		this.endResource = lastRecord;
+		this.startResource = firstRecord.getResource();
+		this.endResource = lastRecord.getResource();
 		this.startDate = firstRecord.getDate();
 		this.endDate = this.calculateEndDate();
 		this.duration = (int) DateUtils.getDateDiff(startDate, endDate, TimeUnit.SECONDS);
+		this.mostVisitedResource = this.calculateMostVisitedResource();
+		this.pagesVisited = this.numPagesVisited();
+		this.timePerPage = this.calculateTimePerPage();
+	}
+
+	public int numPagesVisited() {
+		return records.size();
+	}
+	
+	private int calculateTimePerPage() {
+		int diff = (int) DateUtils.getDateDiff(startDate, endDate, TimeUnit.SECONDS);
+		return diff / numPagesVisited(); 
+	}
+
+	private String calculateMostVisitedResource() {
+		Map<String, Integer> helpMap = new HashMap<>();
+		int currentMax = 0;
+		String mostVisitedResourceName = "";
 		
+		for (ApacheLogRecord record: records) {
+			String resourceName = record.getResource();
+			
+			Integer count = helpMap.get(resourceName);
+	
+			if(count == null) {
+				count = 0;
+			}
+	
+			count++;
+			helpMap.put(resourceName, count);
+		
+			if(count > currentMax) {
+				currentMax = count;
+				mostVisitedResourceName = resourceName;
+			}
+		}
+	
+		return mostVisitedResourceName;
 	}
 
 	protected Date calculateEndDate() {

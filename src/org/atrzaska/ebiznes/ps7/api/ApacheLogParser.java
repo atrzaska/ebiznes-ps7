@@ -21,12 +21,12 @@ public class ApacheLogParser {
 	private UserList userList = new UserList();
 
 	public ApacheLogParser(ApacheLog log) {
-		this.apacheLog = apacheLog;
+		this.apacheLog = log;
 
-		this.parse(log);
+		this.parse();
 	}
 
-	private void parse(ApacheLog log) {
+	private void parse() {
 		for (int i = 0; i < apacheLog.numRecords(); i++) {
 			ApacheLogRecord record = apacheLog.getRecord(i);
 
@@ -39,5 +39,9 @@ public class ApacheLogParser {
 			Session session = user.getCurrentSession(record.getDate());
 			session.addRecord(record);
 		}
+	}
+
+	public void saveCsv(String path) {
+		
 	}
 }
