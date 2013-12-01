@@ -36,7 +36,6 @@ public class ApacheLogParser {
 			// get user
 			User user = userList.getUser(ip, browserInfo);
 
-			
 		}
 	}
 }
