@@ -5,15 +5,15 @@ import java.util.Date;
 import org.atrzaska.ebiznes.util.DateUtils;
 
 public class ApacheLogRecord {
-	String ip;
+	private String ip;
 
-	Date date;
-	
-	String resource;
-	String responseCode;
-	String unk1;
-	String referingSite;
-	String browserInfo;
+	private Date date;
+
+	private String resource;
+	private String responseCode;
+	private String unk1;
+	private String referingSite;
+	private String browserInfo;
 	
 	public ApacheLogRecord(String ip,
 			String day,
@@ -83,6 +83,14 @@ public class ApacheLogRecord {
 	
 	public void setBrowserInfo(String browserInfo) {
 		this.browserInfo = browserInfo;
+	}
+	
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	public String toString() {

@@ -113,4 +113,13 @@ public class Session {
 	public List<ApacheLogRecord> getRecords() {
 		return records;
 	}
+
+	public void addRecord(ApacheLogRecord record) {
+		this.records.add(record);
+		this.process();
+	}
+
+	private void process() {
+		
+	}
 }

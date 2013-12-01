@@ -36,6 +36,8 @@ public class ApacheLogParser {
 			// get user
 			User user = userList.getUser(ip, browserInfo);
 
+			Session session = user.getCurrentSession(record.getDate());
+			session.addRecord(record);
 		}
 	}
 }
