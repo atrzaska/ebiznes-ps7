@@ -11,7 +11,7 @@ public class DateUtils {
 	public static Date parseDate(String year, String month, String day,
 			String hour, String minute, String second) {
 		
-		month.replace("Nov", "11");
+		month = month.replace("Nov", "11");
 
 		int year2 = Integer.parseInt(year);
 		int month2 = Integer.parseInt(month);

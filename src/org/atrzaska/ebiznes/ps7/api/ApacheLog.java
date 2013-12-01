@@ -62,4 +62,11 @@ public class ApacheLog {
 		return records;
 	}
 
+	public int numRecords() {
+		return records.size();
+	}
+	
+	public ApacheLogRecord getRecord(int index) {
+		return records.get(index);
+	}
 }

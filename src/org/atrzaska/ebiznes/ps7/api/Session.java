@@ -1,7 +1,14 @@
 package org.atrzaska.ebiznes.ps7.api;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.atrzaska.ebiznes.ps7.Config;
+import org.atrzaska.ebiznes.util.DateUtils;
 
 public class Session {
 	private int id;
@@ -22,24 +29,29 @@ public class Session {
 	private int timePerPage;
 
 	/**
-	 * Country name.
-	 */
-	private String country;
-
-	/**
 	 * Most visited resource.
 	 */
-	private ApacheLog mostVisitedResource;
+	private ApacheLogRecord mostVisitedResource;
 
 	/**
 	 * Session start resource.
 	 */
-	private ApacheLog startResource;
+	private ApacheLogRecord startResource;
+	
+	/**
+	 * Start date.
+	 */
+	private Date startDate;
+	
+	/**
+	 * End date.
+	 */
+	private Date endDate;
 	
 	/**
 	 * Session end resource.
 	 */
-	private ApacheLog endResource;
+	private ApacheLogRecord endResource;
 
 	/**
 	 * Session records.
@@ -78,35 +90,27 @@ public class Session {
 		this.timePerPage = timePerPage;
 	}
 
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public ApacheLog getMostVisitedResource() {
+	public ApacheLogRecord getMostVisitedResource() {
 		return mostVisitedResource;
 	}
 
-	public void setMostVisitedResource(ApacheLog mostVisitedResource) {
+	public void setMostVisitedResource(ApacheLogRecord mostVisitedResource) {
 		this.mostVisitedResource = mostVisitedResource;
 	}
 
-	public ApacheLog getStartResource() {
+	public ApacheLogRecord getStartResource() {
 		return startResource;
 	}
 
-	public void setStartResource(ApacheLog startResource) {
+	public void setStartResource(ApacheLogRecord startResource) {
 		this.startResource = startResource;
 	}
 
-	public ApacheLog getEndResource() {
+	public ApacheLogRecord getEndResource() {
 		return endResource;
 	}
 
-	public void setEndResource(ApacheLog endResource) {
+	public void setEndResource(ApacheLogRecord endResource) {
 		this.endResource = endResource;
 	}
 
@@ -116,10 +120,27 @@ public class Session {
 
 	public void addRecord(ApacheLogRecord record) {
 		this.records.add(record);
-		this.process();
+		this.update();
 	}
 
-	private void process() {
+	private void update() {
+		ApacheLogRecord firstRecord = records.get(0);
+		ApacheLogRecord lastRecord = records.get(records.size() - 1);
+		this.startResource = firstRecord;
+		this.endResource = lastRecord;
+		this.startDate = firstRecord.getDate();
+		this.endDate = this.calculateEndDate();
+		this.duration = (int) DateUtils.getDateDiff(startDate, endDate, TimeUnit.SECONDS);
 		
+	}
+
+	protected Date calculateEndDate() {
+		ApacheLogRecord lastRecord = records.get(records.size() - 1);
+		
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(lastRecord.getDate());
+		calendar.add(Calendar.MINUTE, Config.sessionLength);
+	
+		return calendar.getTime();
 	}
 }

@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.atrzaska.ebiznes.ps7.Config;
 import org.atrzaska.ebiznes.util.DateUtils;
 
 public class User {
@@ -20,6 +21,11 @@ public class User {
 	 * Browser info.
 	 */
 	private String browserInfo;
+
+	/**
+	 * Country name.
+	 */
+	private String country;
 
 	/**
 	 * Session list.
@@ -53,23 +59,35 @@ public class User {
 		this.browserInfo = browserInfo;
 	}
 
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
 	public List<Session> getSessions() {
 		return sessions;
 	}
 
 	public Session getCurrentSession(Date currentDate) {
+		// calculate time difference
 		int timeDifference = (int) DateUtils.getDateDiff(lastVisit, currentDate, TimeUnit.MINUTES);
-	
-		if(timeDifference < 30) {
+
+		// bumb visit date
+		this.lastVisit = currentDate;
+
+		if(timeDifference < Config.sessionLength) {
 			// session still active, get last session
 			return this.getLastSession();
 		} else {
 			// session expired, create new one
-			return this.getLastSession();
+			return this.createNewSession();
 		}
 	}
 
-	public Session createNewSession() {
+	private Session createNewSession() {
 		Session session = new Session();
 		sessions.add(session);
 		return session;

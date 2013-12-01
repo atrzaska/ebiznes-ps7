@@ -27,8 +27,8 @@ public class ApacheLogParser {
 	}
 
 	private void parse(ApacheLog log) {
-		for (int i = 0; i < apacheLog.getRecords().size(); i++) {
-			ApacheLogRecord record = apacheLog.getRecords().get(i);
+		for (int i = 0; i < apacheLog.numRecords(); i++) {
+			ApacheLogRecord record = apacheLog.getRecord(i);
 
 			String ip = record.getIp();
 			String browserInfo = record.getBrowserInfo();
