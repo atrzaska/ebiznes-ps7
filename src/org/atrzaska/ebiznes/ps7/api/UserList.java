@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UserList {
+
 	private List<User> users = new ArrayList<>();
 
 	private Map<String, User> userMap = new HashMap<>();
@@ -27,4 +28,12 @@ public class UserList {
 	public List<User> getUsers() {
 		return users;
 	}
+
+    public int numUsers() {
+        return users.size();
+    }
+
+    public User getUser(int index) {
+        return users.get(index);
+    }
 }

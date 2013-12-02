@@ -1,9 +1,7 @@
 package org.atrzaska.ebiznes.ps7.api;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +34,6 @@ public class User {
 	 * Last visit.
 	 */
 	private Date lastVisit;
-	
 	
 	public User(String ip, String browserInfo) {
 		this.ip = ip;
@@ -72,11 +69,14 @@ public class User {
 	}
 
 	public Session getCurrentSession(Date currentDate) {
-		// calculate time difference
-		int timeDifference = (int) DateUtils.getDateDiff(lastVisit, currentDate, TimeUnit.MINUTES);
+        int timeDifference = 999999999;
 
+        if(getLastVisit() != null) {
+            timeDifference = (int) DateUtils.getDateDiff(getLastVisit(), currentDate, TimeUnit.MINUTES);
+        }
+        
 		// bumb visit date
-		this.lastVisit = currentDate;
+        this.setLastVisit(currentDate);
 
 		if(timeDifference < Config.sessionLength) {
 			// session still active, get last session
@@ -89,15 +89,95 @@ public class User {
 
 	private Session createNewSession() {
 		Session session = new Session();
-		sessions.add(session);
+		getSessions().add(session);
 		return session;
 	}
 
 	private Session getLastSession() {
-		if(sessions.isEmpty()) {
+		if(getSessions().isEmpty()) {
 			return this.createNewSession();
 		}
 	
-		return sessions.get(sessions.size() -1);
+		return getSessions().get(getSessions().size() -1);
 	}
+
+    /**
+     * @return the sessionTime
+     */
+    public int getSessionTime() {
+        int val = 0;
+
+        for (Session session : sessions) {
+            val += session.getDuration();
+        }
+    
+        return val;
+    }
+
+
+    /**
+     * @return the pagesVisited
+     */
+    public int getPagesVisited() {
+        int val = 0;
+
+        for (Session session : sessions) {
+            val += session.getPagesVisited();
+        }
+    
+        return val;
+    }
+
+    /**
+     * @return the averageTimePerPage
+     */
+    public int getAverageTimePerPage() {
+        int val = 0;
+        
+        for (Session session : sessions) {
+            val += session.getTimePerPage();
+        }
+    
+        return val / sessions.size();
+    }
+
+    /**
+     * @return the mostVisitedResource
+     */
+    public Resource getMostVisitedResource() {
+//        int val = 0;
+//        
+//        for (Session session : sessions) {
+//            val += session.getTimePerPage();
+//        }
+//    
+//        return val;
+    
+        return null;
+    }
+
+    public int numSessions() {
+        return sessions.size();
+    }
+
+    /**
+     * @param sessions the sessions to set
+     */
+    public void setSessions(List<Session> sessions) {
+        this.sessions = sessions;
+    }
+
+    /**
+     * @return the lastVisit
+     */
+    public Date getLastVisit() {
+        return lastVisit;
+    }
+
+    /**
+     * @param lastVisit the lastVisit to set
+     */
+    public void setLastVisit(Date lastVisit) {
+        this.lastVisit = lastVisit;
+    }
 }

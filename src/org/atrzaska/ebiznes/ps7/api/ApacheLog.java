@@ -7,31 +7,30 @@ import java.util.regex.Pattern;
 
 import org.atrzaska.ebiznes.util.FileUtils;
 
-public class ApacheLog {
-	protected List<ApacheLogRecord> records = new ArrayList<>();
+public final class ApacheLog {
+    protected List<ApacheLogRecord> records = new ArrayList<>();
 
-	public ApacheLog(String file)
-	{
-		this.load(file);
-	}
+    public ApacheLog(String file) {
+        this.load(file);
+    }
 
-	public void printData() {
-		for (ApacheLogRecord record : records) {
-			System.out.println(record);
-		}
-	}
-	
-	public void load(String file) {
-		// clear records
-		records.clear();
-	
+    public void printData() {
+        for (ApacheLogRecord record : records) {
+            System.out.println(record);
+        }
+    }
+
+    public void load(String file) {
+        // clear records
+        records.clear();
+
         // open file for reading
         String fileString = FileUtils.readFileAsString(file);
 
         // compile pattern for matching lines
-//		Pattern pattern = Pattern.compile("(\\d+),[ ]*(.+)");
-		Pattern pattern = Pattern.compile("(.+) - - \\[((\\d+)/(\\w+))/(\\d+):(\\d+):(\\d+):(\\d+) -0500] \"GET (.+) HTTP/1.\\d\" (\\d+) (.+) \"(.+)\" \"(.+)\"");
-		Matcher matcher = pattern.matcher(fileString);
+//            Pattern pattern = Pattern.compile("(\\d+),[ ]*(.+)");
+        Pattern pattern = Pattern.compile("(.+) - - \\[((\\d+)/(\\w+))/(\\d+):(\\d+):(\\d+):(\\d+) -0500] \"GET (.+) HTTP/1.\\d\" (\\d+) (.+) \"(.+)\" \"(.+)\"");
+        Matcher matcher = pattern.matcher(fileString);
 
         // find matches
         while (matcher.find()) {
@@ -51,22 +50,22 @@ public class ApacheLog {
 
             // create record
             ApacheLogRecord record = new ApacheLogRecord(ip, day, month, year, hour,
-            		minute, second, resource, responseCode, unk1, referingSite, browserInfo);
-            
+                        minute, second, resource, responseCode, unk1, referingSite, browserInfo);
+
             // add record
             records.add(record);
         }
-	}
+    }
 
-	public List<ApacheLogRecord> getRecords() {
-		return records;
-	}
+    public List<ApacheLogRecord> getRecords() {
+        return records;
+    }
 
-	public int numRecords() {
-		return records.size();
-	}
-	
-	public ApacheLogRecord getRecord(int index) {
-		return records.get(index);
-	}
+    public int numRecords() {
+        return records.size();
+    }
+
+    public ApacheLogRecord getRecord(int index) {
+        return records.get(index);
+    }
 }
