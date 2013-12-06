@@ -9,12 +9,12 @@ import org.atrzaska.ebiznes.ps7.Config;
 import org.atrzaska.ebiznes.util.DateUtils;
 
 public class User {
-	
+
 	/**
 	 * User id.
 	 */
 	private String ip;
-	
+
 	/**
 	 * Browser info.
 	 */
@@ -29,15 +29,38 @@ public class User {
 	 * Session list.
 	 */
 	private List<Session> sessions = new ArrayList<>();
-	
+
 	/**
 	 * Last visit.
 	 */
 	private Date lastVisit;
-	
+
 	public User(String ip, String browserInfo) {
 		this.ip = ip;
 		this.browserInfo = browserInfo;
+		this.country = this.calculateCountry(ip);
+	}
+
+	private String calculateCountry(String ip) {
+		String topLevelDomain = ip.toLowerCase().substring(ip.lastIndexOf(".") + 1);
+
+		if(topLevelDomain.equalsIgnoreCase("com")) {
+			return "?";
+		}
+		if(topLevelDomain.equalsIgnoreCase("net")) {
+			return "?";
+		}
+		if(topLevelDomain.equalsIgnoreCase("org")) {
+			return "?";
+		}
+		if(topLevelDomain.equalsIgnoreCase("unr")) {
+			return "?";
+		}
+		if(topLevelDomain.equalsIgnoreCase("edu")) {
+			return "?";
+		}
+
+		return topLevelDomain;
 	}
 
 	public String getIp() {
@@ -71,10 +94,10 @@ public class User {
 	public Session getCurrentSession(Date currentDate) {
         int timeDifference = 999999999;
 
-        if(getLastVisit() != null) {
-            timeDifference = (int) DateUtils.getDateDiff(getLastVisit(), currentDate, TimeUnit.MINUTES);
+        if(lastVisit != null) {
+            timeDifference = (int) DateUtils.getDateDiff(lastVisit, currentDate, TimeUnit.MINUTES);
         }
-        
+
 		// bumb visit date
         this.setLastVisit(currentDate);
 
@@ -89,16 +112,17 @@ public class User {
 
 	private Session createNewSession() {
 		Session session = new Session();
-		getSessions().add(session);
+		sessions.add(session);
+
 		return session;
 	}
 
 	private Session getLastSession() {
-		if(getSessions().isEmpty()) {
+		if(sessions.isEmpty()) {
 			return this.createNewSession();
 		}
-	
-		return getSessions().get(getSessions().size() -1);
+
+		return sessions.get(getSessions().size() -1);
 	}
 
     /**
@@ -110,7 +134,7 @@ public class User {
         for (Session session : sessions) {
             val += session.getDuration();
         }
-    
+
         return val;
     }
 
@@ -118,13 +142,13 @@ public class User {
     /**
      * @return the pagesVisited
      */
-    public int getPagesVisited() {
+    public int numPagesVisited() {
         int val = 0;
 
         for (Session session : sessions) {
             val += session.getPagesVisited();
         }
-    
+
         return val;
     }
 
@@ -133,11 +157,11 @@ public class User {
      */
     public int getAverageTimePerPage() {
         int val = 0;
-        
+
         for (Session session : sessions) {
             val += session.getTimePerPage();
         }
-    
+
         return val / sessions.size();
     }
 
@@ -145,15 +169,7 @@ public class User {
      * @return the mostVisitedResource
      */
     public Resource getMostVisitedResource() {
-//        int val = 0;
-//        
-//        for (Session session : sessions) {
-//            val += session.getTimePerPage();
-//        }
-//    
-//        return val;
-    
-        return null;
+    	return new Resource(sessions.get(0).getMostVisitedResource());
     }
 
     public int numSessions() {
@@ -179,5 +195,10 @@ public class User {
      */
     public void setLastVisit(Date lastVisit) {
         this.lastVisit = lastVisit;
+    }
+
+    @Override
+	public String toString() {
+    	return ip + " " + browserInfo;
     }
 }

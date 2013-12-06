@@ -3,6 +3,10 @@ package org.atrzaska.ebiznes.ps7.api;
 public class Resource {
     private String name;
 
+    public Resource(String name) {
+    	this.name = name;
+    }
+
     /**
      * @return the name
      */
@@ -15,5 +19,10 @@ public class Resource {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+	public String toString() {
+    	return this.name;
     }
 }

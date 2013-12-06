@@ -60,6 +60,12 @@ public class Session {
 	 */
 	private List<ApacheLogRecord> records = new ArrayList<>();
 
+	/**
+	 * Session user.
+	 */
+	private User user;
+	
+
 	public int getId() {
 		return id;
 	}
@@ -123,6 +129,14 @@ public class Session {
 	public void addRecord(ApacheLogRecord record) {
 		this.records.add(record);
 		this.update();
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	private void update() {

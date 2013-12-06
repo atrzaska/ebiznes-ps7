@@ -52,6 +52,14 @@ public final class ApacheLog {
             ApacheLogRecord record = new ApacheLogRecord(ip, day, month, year, hour,
                         minute, second, resource, responseCode, unk1, referingSite, browserInfo);
 
+            if(!record.isHuman()) {
+            	continue;
+            }
+
+            if(!record.isWebPage()) {
+            	continue;
+            }
+
             // add record
             records.add(record);
         }
