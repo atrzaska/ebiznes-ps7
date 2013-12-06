@@ -105,6 +105,7 @@ public class ApacheLogRecord {
     	if(val.contains("pdf")) { return false; }
     	if(val.contains("ppt")) { return false; }
     	if(val.contains("ico")) { return false; }
+    	if(val.contains("txt")) { return false; }
 
 		return true;
 	}
